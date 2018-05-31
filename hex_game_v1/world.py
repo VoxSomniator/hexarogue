@@ -47,48 +47,31 @@ class Grid():
 		with reference and no coordinates
 	oh thats actually just one type with default args
 	"""
-	def relocate_entity(self, entity, direction, from_coord = None):
-		#If either of the froms are None, get the right coordinates from the character
-		if from_coord is None:
-			from_coord = entity.get_coordinate()
-
-
-		#The actual list in that 
-		from_hex = self.world_grid[from_coord.q][from_coord.r]
-
-		offset_lookup = {
-			'r': HexCoord.R,
-			'dr': HexCoord.DR,
-			'dl': HexCoord.DL,
-			'l': HexCoord.L,
-			'ul': HexCoord.UL,
-			'ur': HexCoord.UR,
-		}
-
-		#dest_coord SHOULD now have the coordinates for the new position
-		dest_coord = offset_lookup[direction] + (from_coord)
+	def relocate_entity(self, entity, destination):
+		from_hex = self.world_grid[entity.coordinate.q][entity.coordinate.r]
 
 		#Turns probably-empty destination hex into a list to prepare for adding
-		self.init_hex(dest_coord.q, dest_coord.r)
-		to_hex = self.world_grid[dest_coord.q][dest_coord.r]
+		self.init_hex(destination.q, destination.r)
+		to_hex = self.world_grid[destination.q][destination.r]
 
 		from_hex.remove(entity)
 		to_hex.append(entity)
 
-		#Update the coordinate stored in the character- Important that later versions actually make sure the move worked.
-		entity.reposition(dest_coord.q, dest_coord.r)
-
 		#Check the previous location- If that list is empty now, turn it back to Null (empty).
 		if len(from_hex) < 1:
-			self.world_grid[from_coord.q][from_coord.r] = None
+			self.world_grid[entity.coordinate.q][entity.coordinate.r] = None
 
 
-	#Returns the main sprite of a hex, for Artist use. Test version just returns true for player.
+	#Returns list of objects in a hex, used by artist and collision-detector
 	def read_hex(self, q_pos, r_pos):
 		if self.world_grid[q_pos][r_pos] is not None:
-			return True
+			return self.world_grid[q_pos][r_pos]
 		else:
-			return False
+			return []
+
+	#Similar to read_hex but with a HexCoord lol
+	def read_coordinate(self, coordinate):
+		return self.read_hex(coordinate.q, coordinate.r)
 
 	#Oft-used helper function. Hexes start out as nulls, this turns them to lists to add things to later.
 	def init_hex(self, q_pos, r_pos):
@@ -151,7 +134,7 @@ Entities.ENTITIES = Entities()
 def add_test_object():
 
 	#This just kinda sticks a "player" dummy in a hex somewhere.
-	new_object = Character(2, 2, "player")
+	new_object = Character(2, 2, "player", "player")
 	Grid.GRID.new_entity(new_object, 2, 2)
 	Entities.ENTITIES.add_entity(new_object)
 

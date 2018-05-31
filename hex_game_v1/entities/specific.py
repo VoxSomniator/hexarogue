@@ -16,5 +16,5 @@ class Specific(Entity):
 		return self.coordinate
 
 	#Changes x and y coordinates, will do collision-checking later
-	def reposition(self, q_pos, r_pos):
-		self.coordinate = HexCoord(q_pos, r_pos)
+	def reposition(self, coordinate):
+		self.coordinate = HexCoord(coordinate.q, coordinate.r)

@@ -20,7 +20,7 @@ hex_size = 15
 #Dictionary of sprites and sprite IDs, for drawing objects.
 sprite_id = {
 	'player': pygame.image.load("./hex_game_v1/sprites/smallswirly.png"),
-	'bee': pygame.image.load("./hex_game_v1/sprites/honeybee.png")
+	'bee': pygame.image.load("./hex_game_v1/sprites/wall_1.png")
 }
 
 def init_screen():
@@ -57,7 +57,7 @@ def draw_hexes():
 
 	#Hexagon draw offsets
 	#Fill in later, to make stuff "start" off-screen
-	y_offset = -15
+	y_offset = -14
 	x_offset_base = -15
 
 	for y in range(screen_y // math.floor(hex_height * 0.75) +1):
@@ -87,9 +87,10 @@ corner_y = 10
 def draw_entities():
 	for q in range(len(world.Grid.GRID.world_grid)):
 		for r in range(len(world.Grid.GRID.world_grid[0])):
-			if world.Grid.GRID.read_hex(q, r):
+			current_hex = world.Grid.GRID.read_hex(q, r)
+			if not current_hex == []:
 				draw_x = hex_size * (math.sqrt(3) * q + math.sqrt(3)/2 * r)
 				draw_y = hex_size * (3/2 * r)
 				draw_x += corner_x
 				draw_y += corner_y
-				screen.blit(sprite_id[world.Grid.GRID.world_grid[q][r][0].sprite_id], (draw_x, draw_y))
+				screen.blit(sprite_id[current_hex[0].sprite_id], (draw_x, draw_y))

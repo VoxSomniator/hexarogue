@@ -4,6 +4,7 @@ from . import world
 #Does INPUT STUFF. State machine I guess? Routes button events to the correct controller/menu/etc.
 
 player_obj = None
+player_controller = None
 player_moves = None
 
 #Will do some kinda state-engine thing later but for now lol
@@ -24,6 +25,12 @@ def init_input():
 		259: 'dr'
 	}
 
+#New method to get object.
+def set_player_controller(controller):
+	global player_controller
+	player_controller = controller
+	print("controller added confirm")
+
 
 #Called by main every frame. Reads pygame inputs, updates held keys, etc.
 #Usually returns true, returns false if the game is exited.
@@ -39,5 +46,5 @@ def check_input():
 			if state == "playermove":
 				#Do player movement key stuff.
 				if event.key in player_moves:
-					world.Grid.GRID.relocate_entity(player_obj, player_moves[event.key])
+					player_controller.step(player_moves[event.key])
 	return continuing
